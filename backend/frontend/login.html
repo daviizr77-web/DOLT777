@@ -17,32 +17,24 @@ body{
 }
 
 .container{
- width:350px;
+ width:360px;
  background:#0b2e27;
  border-radius:15px;
  padding:20px;
- box-shadow:0 0 20px rgba(0,0,0,0.5);
+ box-shadow:0 0 25px rgba(0,0,0,0.6);
+ animation:fade 0.5s;
+}
+
+@keyframes fade{
+ from{opacity:0; transform:translateY(20px);}
+ to{opacity:1;}
 }
 
 .logo{
  text-align:center;
  font-size:28px;
  font-weight:bold;
- margin-bottom:15px;
-}
-
-.tabs{
- display:flex;
- justify-content:space-around;
- margin-bottom:15px;
-}
-
-.tabs div{
- cursor:pointer;
-}
-
-.active{
- border-bottom:2px solid #facc15;
+ margin-bottom:10px;
 }
 
 .banner{
@@ -54,6 +46,25 @@ body{
  font-weight:bold;
 }
 
+.tabs{
+ display:flex;
+ justify-content:space-around;
+ margin-bottom:15px;
+}
+
+.tabs div{
+ padding:8px;
+ cursor:pointer;
+}
+
+.active{
+ border-bottom:2px solid #facc15;
+}
+
+.input-group{
+ position:relative;
+}
+
 input{
  width:100%;
  padding:12px;
@@ -62,6 +73,35 @@ input{
  border-radius:8px;
  background:#134e4a;
  color:white;
+}
+
+.flag{
+ position:absolute;
+ left:10px;
+ top:50%;
+ transform:translateY(-50%);
+}
+
+.eye{
+ position:absolute;
+ right:10px;
+ top:50%;
+ transform:translateY(-50%);
+ cursor:pointer;
+}
+
+.strength{
+ height:5px;
+ background:#222;
+ margin-top:-5px;
+ border-radius:5px;
+ overflow:hidden;
+}
+
+.strength div{
+ height:100%;
+ width:0%;
+ background:lime;
 }
 
 .checkbox{
@@ -83,6 +123,12 @@ button{
  font-size:16px;
  cursor:pointer;
 }
+
+.loading{
+ display:none;
+ text-align:center;
+ margin-top:10px;
+}
 </style>
 </head>
 
@@ -92,48 +138,111 @@ button{
 
 <div class="logo">DOLT77</div>
 
-<div class="banner">
-🎁 Convide e ganhe bônus
-</div>
+<div class="banner">🎁 Bônus de boas-vindas</div>
 
 <div class="tabs">
- <div class="active">Registro</div>
- <div>Login</div>
+ <div id="tabReg" class="active" onclick="mudar('reg')">Registro</div>
+ <div id="tabLog" onclick="mudar('log')">Login</div>
 </div>
 
-<input id="email" placeholder="📱 Telefone ou Email">
-<input id="senha" type="password" placeholder="🔒 Senha">
-<input id="senha2" type="password" placeholder="🔒 Confirmar senha">
-<input id="nome" placeholder="👤 Nome real">
+<div id="registro">
+
+<div class="input-group">
+ <span class="flag">🇧🇷 +55</span>
+ <input id="email" placeholder="Celular ou Email" style="padding-left:80px;">
+</div>
+
+<div class="input-group">
+ <input id="senha" type="password" placeholder="Senha" oninput="forca()">
+ <span class="eye" onclick="toggle('senha')">👁</span>
+</div>
+
+<div class="strength"><div id="barra"></div></div>
+
+<div class="input-group">
+ <input id="senha2" type="password" placeholder="Confirmar senha">
+ <span class="eye" onclick="toggle('senha2')">👁</span>
+</div>
+
+<input id="nome" placeholder="Nome real">
 
 <div class="checkbox">
- <input type="checkbox" checked>
- <span> Tenho mais de 18 anos</span>
+ <input type="checkbox" checked> <span> Tenho +18 anos</span>
 </div>
 
 <button onclick="registrar()">Registrar</button>
 
 </div>
 
+<div id="login" style="display:none">
+
+<input id="email2" placeholder="Email">
+
+<div class="input-group">
+ <input id="senhaLog" type="password" placeholder="Senha">
+ <span class="eye" onclick="toggle('senhaLog')">👁</span>
+</div>
+
+<button onclick="logar()">Entrar</button>
+
+</div>
+
+<div class="loading" id="loading">Carregando...</div>
+
+</div>
+
 <script>
+function mudar(tipo){
+ registro.style.display = tipo==="reg" ? "block":"none";
+ login.style.display = tipo==="log" ? "block":"none";
+
+ tabReg.classList.toggle("active", tipo==="reg");
+ tabLog.classList.toggle("active", tipo==="log");
+}
+
+function toggle(id){
+ let i = document.getElementById(id);
+ i.type = i.type === "password" ? "text":"password";
+}
+
+function forca(){
+ let s = senha.value.length;
+ barra.style.width = (s*10)+"%";
+}
+
 async function registrar(){
+ loading.style.display="block";
 
  if(senha.value !== senha2.value){
-   alert("Senhas não coincidem");
-   return;
+  alert("Senhas não coincidem");
+  loading.style.display="none";
+  return;
  }
 
  let res = await fetch("http://localhost:3000/login",{
   method:"POST",
   headers:{"Content-Type":"application/json"},
-  body:JSON.stringify({
-    email:email.value
-  })
+  body:JSON.stringify({email:email.value})
  });
 
  let data = await res.json();
-
  localStorage.setItem("user", JSON.stringify(data));
+
+ window.location="index.html";
+}
+
+async function logar(){
+ loading.style.display="block";
+
+ let res = await fetch("http://localhost:3000/login",{
+  method:"POST",
+  headers:{"Content-Type":"application/json"},
+  body:JSON.stringify({email:email2.value})
+ });
+
+ let data = await res.json();
+ localStorage.setItem("user", JSON.stringify(data));
+
  window.location="index.html";
 }
 </script>
