@@ -1,47 +1,65 @@
 const express = require("express");
 const cors = require("cors");
-const mongoose = require("mongoose");
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-// CONEXÃO MONGO
-mongoose.connect("mongodb://127.0.0.1:27017/dot77");
+let users = [];
 
-// MODEL
-const User = mongoose.model("User", {
- email:String,
- saldo:Number
-});
-
-// LOGIN
-app.post("/login", async (req,res)=>{
+// LOGIN / REGISTRO
+app.post("/login", (req,res)=>{
  let {email} = req.body;
 
- let user = await User.findOne({email});
+ let user = users.find(u => u.email === email);
 
  if(!user){
-   user = await User.create({email, saldo:100});
+  user = {email, saldo:1000};
+  users.push(user);
  }
 
- let token = Buffer.from(email).toString("base64");
-
- res.json({user, token});
+ res.json(user);
 });
 
-// AUTH
-async function auth(req,res,next){
- let token = req.headers.authorization;
- let email = Buffer.from(token,"base64").toString("utf8");
-
- req.user = await User.findOne({email});
- next();
-}
-
-// SALDO
-app.get("/saldo", auth, (req,res)=>{
- res.json(req.user);
+// LISTAR USUÁRIOS (ADMIN)
+app.get("/admin/users", (req,res)=>{
+ res.json(users);
 });
 
-app.listen(3000, ()=>console.log("DOT77 rodando"));
+// ALTERAR SALDO
+app.post("/admin/saldo", (req,res)=>{
+ let {email, valor} = req.body;
+
+ let user = users.find(u => u.email === email);
+ if(user){
+  user.saldo += valor;
+ }
+
+ res.json(user);
+});
+
+// DEPOSITO
+app.post("/depositar", (req,res)=>{
+ let {email, valor} = req.body;
+
+ let user = users.find(u => u.email === email);
+ if(user){
+  user.saldo += valor;
+ }
+
+ res.json(user);
+});
+
+// SAQUE
+app.post("/sacar", (req,res)=>{
+ let {email, valor} = req.body;
+
+ let user = users.find(u => u.email === email);
+ if(user && user.saldo >= valor){
+  user.saldo -= valor;
+ }
+
+ res.json(user);
+});
+
+app.listen(3000, ()=>console.log("Servidor rodando 🚀"));
