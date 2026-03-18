@@ -1,0 +1,10 @@
+// ENVIAR MSG
+app.post("/chat",(req,res)=>{
+ chat.push(req.body);
+ res.json(chat);
+});
+
+// LISTAR CHAT
+app.get("/chat",(req,res)=>{
+ res.json(chat);
+});
