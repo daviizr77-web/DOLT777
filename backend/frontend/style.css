@@ -1,0 +1,33 @@
+body{
+ margin:0;
+ background:#0b0f1a;
+ color:white;
+ font-family:Arial;
+}
+
+.topo{
+ display:flex;
+ justify-content:space-between;
+ padding:15px;
+ background:#111827;
+}
+
+.grid{
+ display:grid;
+ grid-template-columns: repeat(2,1fr);
+ gap:15px;
+ padding:15px;
+}
+
+.card{
+ background:#1f2937;
+ padding:20px;
+ border-radius:12px;
+ text-align:center;
+ cursor:pointer;
+ transition:0.2s;
+}
+
+.card:hover{
+ transform:scale(1.05);
+}
