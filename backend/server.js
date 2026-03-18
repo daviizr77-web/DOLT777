@@ -9,36 +9,28 @@ let users = [];
 
 // LOGIN
 app.post("/login", (req, res) => {
-  const { email } = req.body;
+ const { email } = req.body;
 
-  let user = users.find(u => u.email === email);
+ let user = users.find(u => u.email === email);
 
-  if (!user) {
-    user = { email, saldo: 100 };
-    users.push(user);
-  }
+ if(!user){
+  user = { email, saldo:100 };
+  users.push(user);
+ }
 
-  res.json(user);
+ let token = "token-"+email;
+
+ res.json({user, token});
 });
 
-// SALDO
-app.get("/saldo/:email", (req, res) => {
-  let user = users.find(u => u.email === req.params.email);
-  res.json(user);
+// PROTEGIDO
+app.get("/saldo", (req, res) => {
+ let token = req.headers.authorization;
+
+ let email = token.replace("token-","");
+ let user = users.find(u => u.email === email);
+
+ res.json(user);
 });
 
-// DEPOSITO
-app.post("/deposito", (req, res) => {
-  let user = users.find(u => u.email === req.body.email);
-  user.saldo += Number(req.body.valor);
-  res.json(user);
-});
-
-// SAQUE
-app.post("/saque", (req, res) => {
-  let user = users.find(u => u.email === req.body.email);
-  user.saldo -= Number(req.body.valor);
-  res.json(user);
-});
-
-app.listen(3000, () => console.log("Servidor rodando"));
+app.listen(3000);
