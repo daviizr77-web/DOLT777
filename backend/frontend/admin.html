@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<body style="background:#0b0f1a;color:white;text-align:center">
+
+<h1>👑 ADMIN DOT77</h1>
+
+<button onclick="carregar()">Carregar Usuários</button>
+
+<div id="lista"></div>
+
+<script>
+async function carregar(){
+ let res = await fetch("http://localhost:3000/users");
+ let users = await res.json();
+
+ lista.innerHTML="";
+
+ users.forEach(u=>{
+   lista.innerHTML += `
+     <div style="margin:10px;padding:10px;background:#111">
+       ${u.email} - Saldo: ${u.saldo}
+       <button onclick="add('${u.email}')">+100</button>
+     </div>
+   `;
+ });
+}
+
+async function add(email){
+ await fetch("http://localhost:3000/add",{
+   method:"POST",
+   headers:{"Content-Type":"application/json"},
+   body:JSON.stringify({email})
+ });
+
+ carregar();
+}
+</script>
+
+</body>
+</html>
