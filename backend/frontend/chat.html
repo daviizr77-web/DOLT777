@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<body style="background:#0b0f1a;color:white">
+
+<h2>💬 Chat</h2>
+
+<div id="msgs"></div>
+
+<input id="msg">
+<button onclick="enviar()">Enviar</button>
+
+<script>
+let user = JSON.parse(localStorage.getItem("user"));
+
+async function carregar(){
+ let res = await fetch("http://localhost:3000/chat");
+ let data = await res.json();
+
+ msgs.innerHTML="";
+ data.forEach(m=>{
+   msgs.innerHTML += `<div>${m.email}: ${m.msg}</div>`;
+ });
+}
+
+async function enviar(){
+ await fetch("http://localhost:3000/chat",{
+  method:"POST",
+  headers:{"Content-Type":"application/json"},
+  body:JSON.stringify({
+    email:user.email,
+    msg:msg.value
+  })
+ });
+
+ msg.value="";
+ carregar();
+}
+
+setInterval(carregar,2000);
+</script>
+
+</body>
+</html>
