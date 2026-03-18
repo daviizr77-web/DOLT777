@@ -1,10 +1,14 @@
-let user = JSON.parse(localStorage.getItem("user"));
+let data = JSON.parse(localStorage.getItem("user"));
 
-async function atualizar(){
- let res = await fetch("http://localhost:3000/saldo/"+user.email);
- let data = await res.json();
+let token = data.token;
 
- saldo.innerText = "Saldo: "+data.saldo;
+async function carregar(){
+ let res = await fetch("http://localhost:3000/saldo",{
+  headers:{Authorization:token}
+ });
+
+ let user = await res.json();
+ saldo.innerText="Saldo: "+user.saldo;
 }
 
-atualizar();
+carregar();
