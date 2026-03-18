@@ -1,23 +1,82 @@
 <!DOCTYPE html>
 <html>
+<head>
+<meta charset="UTF-8">
+<title>DOT77</title>
+
+<style>
+body{
+ margin:0;
+ height:100vh;
+ display:flex;
+ justify-content:center;
+ align-items:center;
+ background:linear-gradient(180deg,#020617,#0b0f1a);
+ font-family:Arial;
+ color:white;
+}
+
+.box{
+ background:#111827;
+ padding:40px;
+ border-radius:15px;
+ width:300px;
+ text-align:center;
+ box-shadow:0 0 20px rgba(0,0,0,0.5);
+}
+
+h1{
+ margin-bottom:20px;
+}
+
+input{
+ width:100%;
+ padding:12px;
+ margin:10px 0;
+ border:none;
+ border-radius:8px;
+ background:#1f2937;
+ color:white;
+}
+
+button{
+ width:100%;
+ padding:12px;
+ margin-top:10px;
+ border:none;
+ border-radius:8px;
+ background:#22c55e;
+ color:white;
+ font-weight:bold;
+ cursor:pointer;
+ transition:0.2s;
+}
+
+button:hover{
+ background:#16a34a;
+}
+</style>
+</head>
+
 <body>
 
-<h2>DOT77 Login</h2>
-
-<input id="email" placeholder="Email">
-<button onclick="login()">Entrar</button>
+<div class="box">
+  <h1>🎰 DOT77</h1>
+  <input id="email" placeholder="Seu email">
+  <button onclick="login()">Entrar</button>
+</div>
 
 <script>
 async function login(){
  let res = await fetch("http://localhost:3000/login",{
-   method:"POST",
-   headers:{"Content-Type":"application/json"},
-   body:JSON.stringify({email:email.value})
+  method:"POST",
+  headers:{"Content-Type":"application/json"},
+  body:JSON.stringify({email:email.value})
  });
 
- let user = await res.json();
- localStorage.setItem("user", JSON.stringify(user));
+ let data = await res.json();
 
+ localStorage.setItem("user", JSON.stringify(data));
  window.location="index.html";
 }
 </script>
