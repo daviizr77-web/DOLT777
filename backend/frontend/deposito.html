@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<body style="background:#0b0f1a;color:white;text-align:center">
+
+<h2>Depositar (PIX)</h2>
+
+<input id="valor" placeholder="Valor">
+<button onclick="gerar()">Gerar PIX</button>
+
+<h3 id="codigo"></h3>
+
+<button onclick="confirmar()">Já paguei</button>
+
+<script>
+let user = JSON.parse(localStorage.getItem("user"));
+
+async function gerar(){
+ let res = await fetch("http://localhost:3000/pix",{
+  method:"POST"
+ });
+
+ let data = await res.json();
+ codigo.innerText = data.codigo;
+}
+
+async function confirmar(){
+ await fetch("http://localhost:3000/pix/confirmar",{
+  method:"POST",
+  headers:{"Content-Type":"application/json"},
+  body:JSON.stringify({
+    email:user.email,
+    valor:valor.value
+  })
+ });
+
+ alert("Saldo atualizado");
+}
+</script>
+
+</body>
+</html>
