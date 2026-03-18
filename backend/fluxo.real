@@ -1,0 +1,12 @@
+// GERAR PIX
+app.post("/pix",(req,res)=>{
+ let codigo = "PIX-"+Math.random();
+ res.json({codigo});
+});
+
+// CONFIRMAR PIX
+app.post("/pix/confirmar",(req,res)=>{
+ let user = users.find(u=>u.email===req.body.email);
+ user.saldo += Number(req.body.valor);
+ res.json(user);
+});
