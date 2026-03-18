@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>DOLT77 - Tiger</title>
+<style>
+body{
+ background:black;
+ color:white;
+ text-align:center;
+ font-family:Arial;
+}
+.slot{
+ font-size:50px;
+ margin:20px;
+}
+button{
+ padding:15px;
+ font-size:18px;
+ background:gold;
+ border:none;
+ border-radius:10px;
+}
+</style>
+</head>
+
+<body>
+
+<h1>🐯 Fortune Tiger</h1>
+
+<div class="slot" id="slot">🍒 🍋 🍉</div>
+
+<button onclick="jogar()">Girar</button>
+
+<h2>Saldo: R$ <span id="saldo">0</span></h2>
+
+<script>
+let user = JSON.parse(localStorage.getItem("user")) || {saldo:1000};
+saldo.innerText = user.saldo;
+
+function jogar(){
+ let simbolos = ["🍒","🍋","🍉","💎","🐯"];
+ let r = [
+  simbolos[Math.floor(Math.random()*5)],
+  simbolos[Math.floor(Math.random()*5)],
+  simbolos[Math.floor(Math.random()*5)]
+ ];
+
+ slot.innerText = r.join(" ");
+
+ if(r[0]==r[1] && r[1]==r[2]){
+  user.saldo += 200;
+ }else{
+  user.saldo -= 50;
+ }
+
+ saldo.innerText = user.saldo;
+ localStorage.setItem("user", JSON.stringify(user));
+}
+</script>
+
+</body>
+</html>
