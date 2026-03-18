@@ -1,36 +1,11 @@
-const express = require("express");
-const cors = require("cors");
-
-const app = express();
-app.use(cors());
-app.use(express.json());
-
-let users = [];
-
-// LOGIN
-app.post("/login", (req, res) => {
- const { email } = req.body;
-
- let user = users.find(u => u.email === email);
-
- if(!user){
-  user = { email, saldo:100 };
-  users.push(user);
- }
-
- let token = "token-"+email;
-
- res.json({user, token});
+// LISTAR USERS
+app.get("/users", (req,res)=>{
+ res.json(users);
 });
 
-// PROTEGIDO
-app.get("/saldo", (req, res) => {
- let token = req.headers.authorization;
-
- let email = token.replace("token-","");
- let user = users.find(u => u.email === email);
-
+// ADD SALDO ADMIN
+app.post("/add", (req,res)=>{
+ let user = users.find(u=>u.email===req.body.email);
+ user.saldo += 100;
  res.json(user);
 });
-
-app.listen(3000);
