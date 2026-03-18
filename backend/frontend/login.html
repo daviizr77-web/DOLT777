@@ -2,76 +2,133 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>DOT77</title>
+<title>DOLT77</title>
 
 <style>
 body{
  margin:0;
- height:100vh;
+ background:#0f3d33;
+ font-family:Arial;
+ color:white;
  display:flex;
  justify-content:center;
  align-items:center;
- background:linear-gradient(180deg,#020617,#0b0f1a);
- font-family:Arial;
- color:white;
+ height:100vh;
 }
 
-.box{
- background:#111827;
- padding:40px;
+.container{
+ width:350px;
+ background:#0b2e27;
  border-radius:15px;
- width:300px;
- text-align:center;
+ padding:20px;
  box-shadow:0 0 20px rgba(0,0,0,0.5);
 }
 
-h1{
- margin-bottom:20px;
+.logo{
+ text-align:center;
+ font-size:28px;
+ font-weight:bold;
+ margin-bottom:15px;
+}
+
+.tabs{
+ display:flex;
+ justify-content:space-around;
+ margin-bottom:15px;
+}
+
+.tabs div{
+ cursor:pointer;
+}
+
+.active{
+ border-bottom:2px solid #facc15;
+}
+
+.banner{
+ background:#16a34a;
+ padding:15px;
+ border-radius:10px;
+ text-align:center;
+ margin-bottom:15px;
+ font-weight:bold;
 }
 
 input{
  width:100%;
  padding:12px;
- margin:10px 0;
+ margin:8px 0;
  border:none;
  border-radius:8px;
- background:#1f2937;
+ background:#134e4a;
  color:white;
+}
+
+.checkbox{
+ display:flex;
+ align-items:center;
+ font-size:12px;
+ margin-top:10px;
 }
 
 button{
  width:100%;
- padding:12px;
- margin-top:10px;
+ padding:14px;
+ margin-top:15px;
  border:none;
- border-radius:8px;
- background:#22c55e;
- color:white;
+ border-radius:10px;
+ background:#facc15;
+ color:black;
  font-weight:bold;
+ font-size:16px;
  cursor:pointer;
- transition:0.2s;
-}
-
-button:hover{
- background:#16a34a;
 }
 </style>
 </head>
 
 <body>
 
-<div class="box">
-  <h1>🎰 DOT77</h1>
-  <input id="email" placeholder="Seu email">
-  <button onclick="login()">Entrar</button>
+<div class="container">
+
+<div class="logo">DOLT77</div>
+
+<div class="banner">
+🎁 Convide e ganhe bônus
+</div>
+
+<div class="tabs">
+ <div class="active">Registro</div>
+ <div>Login</div>
+</div>
+
+<input id="email" placeholder="📱 Telefone ou Email">
+<input id="senha" type="password" placeholder="🔒 Senha">
+<input id="senha2" type="password" placeholder="🔒 Confirmar senha">
+<input id="nome" placeholder="👤 Nome real">
+
+<div class="checkbox">
+ <input type="checkbox" checked>
+ <span> Tenho mais de 18 anos</span>
+</div>
+
+<button onclick="registrar()">Registrar</button>
+
 </div>
 
 <script>
-async function login(){
+async function registrar(){
+
+ if(senha.value !== senha2.value){
+   alert("Senhas não coincidem");
+   return;
+ }
+
  let res = await fetch("http://localhost:3000/login",{
   method:"POST",
   headers:{"Content-Type":"application/json"},
-  body:JSON.stringify({email:email.value})
+  body:JSON.stringify({
+    email:email.value
+  })
  });
 
  let data = await res.json();
