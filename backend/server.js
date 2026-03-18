@@ -1,29 +1,44 @@
-let historico = [];
-let chat = [];
+const express = require("express");
+const cors = require("cors");
 
-// APOSTA
-app.post("/apostar", (req,res)=>{
- let user = users.find(u=>u.email===req.body.email);
+const app = express();
+app.use(cors());
+app.use(express.json());
 
- let valor = Number(req.body.valor);
- user.saldo -= valor;
+let users = [];
 
- let resultado = Math.random() > 0.5;
+// LOGIN
+app.post("/login",(req,res)=>{
+ let {email} = req.body;
 
- if(resultado){
-   user.saldo += valor*2;
+ let user = users.find(u=>u.email===email);
+
+ if(!user){
+   user = {email, saldo:100};
+   users.push(user);
  }
 
- historico.push({
-   email:user.email,
-   valor,
-   ganhou:resultado
- });
+ let token = Buffer.from(email).toString("base64");
 
- res.json(user);
+ res.json({user, token});
 });
 
-// HISTÓRICO
-app.get("/historico",(req,res)=>{
- res.json(historico);
+// MIDDLEWARE
+function auth(req,res,next){
+ let token = req.headers.authorization;
+
+ if(!token) return res.sendStatus(401);
+
+ let email = Buffer.from(token,"base64").toString("utf8");
+
+ req.user = users.find(u=>u.email===email);
+
+ next();
+}
+
+// SALDO PROTEGIDO
+app.get("/saldo", auth, (req,res)=>{
+ res.json(req.user);
 });
+
+app.listen(3000);
