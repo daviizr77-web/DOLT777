@@ -1,21 +1,28 @@
 const express = require("express");
 const cors = require("cors");
+const mongoose = require("mongoose");
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-let users = [];
+// CONEXÃO MONGO
+mongoose.connect("mongodb://127.0.0.1:27017/dot77");
+
+// MODEL
+const User = mongoose.model("User", {
+ email:String,
+ saldo:Number
+});
 
 // LOGIN
-app.post("/login",(req,res)=>{
+app.post("/login", async (req,res)=>{
  let {email} = req.body;
 
- let user = users.find(u=>u.email===email);
+ let user = await User.findOne({email});
 
  if(!user){
-   user = {email, saldo:100};
-   users.push(user);
+   user = await User.create({email, saldo:100});
  }
 
  let token = Buffer.from(email).toString("base64");
@@ -23,22 +30,18 @@ app.post("/login",(req,res)=>{
  res.json({user, token});
 });
 
-// MIDDLEWARE
-function auth(req,res,next){
+// AUTH
+async function auth(req,res,next){
  let token = req.headers.authorization;
-
- if(!token) return res.sendStatus(401);
-
  let email = Buffer.from(token,"base64").toString("utf8");
 
- req.user = users.find(u=>u.email===email);
-
+ req.user = await User.findOne({email});
  next();
 }
 
-// SALDO PROTEGIDO
+// SALDO
 app.get("/saldo", auth, (req,res)=>{
  res.json(req.user);
 });
 
-app.listen(3000);
+app.listen(3000, ()=>console.log("DOT77 rodando"));
